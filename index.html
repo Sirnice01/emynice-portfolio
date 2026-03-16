@@ -6,84 +6,138 @@
 <title>EMYNICE — Video Editor</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--black:#0a0800;--deep:#0f0c00;--card:#161200;--border:rgba(255,220,0,.10);--yellow:#FFD600;--white:#FFF8E1;--muted:#a89a60;--fd:"Bebas Neue",sans-serif;--fb:"DM Sans",sans-serif;--fm:"Space Mono",monospace}
+:root{
+  --black:#0a0800;--deep:#0f0c00;--card:#161200;
+  --border:rgba(255,220,0,0.10);--yellow:#FFD600;
+  --white:#FFF8E1;--muted:#a89a60;
+  --fd:"Bebas Neue",sans-serif;
+  --fb:"DM Sans",sans-serif;
+  --fm:"Space Mono",monospace;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;overflow-x:hidden}
-body{background:var(--black);color:var(--white);font-family:var(--fb);font-weight:300;overflow-x:hidden;cursor:none}
+body{background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-weight:300;overflow-x:hidden;cursor:none}
 .cursor{position:fixed;width:12px;height:12px;background:var(--yellow);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;mix-blend-mode:difference}
 .cursor-ring{position:fixed;width:40px;height:40px;border:1px solid rgba(255,214,0,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
 ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-track{background:var(--black)}::-webkit-scrollbar-thumb{background:var(--yellow)}
+
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.4rem 3rem;display:flex;justify-content:space-between;align-items:center;transition:background .4s}
 nav.scrolled{background:rgba(10,8,0,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:var(--fd);font-size:1.9rem;letter-spacing:5px;color:var(--white);text-decoration:none}
+.nav-logo{font-family:"Bebas Neue",sans-serif;font-size:1.9rem;letter-spacing:5px;color:var(--white);text-decoration:none}
 .nav-logo span{color:var(--yellow)}
 .nav-links{display:flex;gap:2.5rem;list-style:none}
-.nav-links a{color:var(--muted);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-family:var(--fm);transition:color .3s;position:relative}
+.nav-links a{color:var(--muted);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-family:"Space Mono",monospace;transition:color .3s;position:relative}
 .nav-links a::after{content:"";position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--yellow);transition:width .3s}
 .nav-links a:hover{color:var(--yellow)}.nav-links a:hover::after{width:100%}
-.nav-cta{background:var(--yellow);color:var(--black);padding:.6rem 1.6rem;font-family:var(--fm);font-size:.68rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;cursor:none;font-weight:700;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:background .3s}
+.nav-cta{background:var(--yellow);color:var(--black);padding:.6rem 1.6rem;font-family:"Space Mono",monospace;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;cursor:none;font-weight:700;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:background .3s}
 .nav-cta:hover{background:var(--white)}
+
+/* HERO */
 #home{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.hero-vid{position:absolute;inset:0;z-index:0}
-.hero-vid video{width:100%;height:100%;object-fit:cover;filter:brightness(.38)}
-.hero-ov{position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(10,8,0,.55) 0%,rgba(10,8,0,.15) 40%,rgba(10,8,0,.92) 100%)}
-.hero-grid{position:absolute;inset:0;z-index:2;background-image:linear-gradient(rgba(255,214,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,214,0,.04) 1px,transparent 1px);background-size:60px 60px;animation:gridShift 22s linear infinite}
+.hero-bg-img{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(255,214,0,0.15) 0%,transparent 60%),var(--black)}
+.hero-grid{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(255,214,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,214,0,.05) 1px,transparent 1px);background-size:60px 60px;animation:gridShift 22s linear infinite}
 @keyframes gridShift{from{transform:translateY(0)}to{transform:translateY(60px)}}
 .hero-content{position:relative;z-index:3;text-align:center;max-width:960px;padding:0 2rem}
-.hero-tag{display:inline-block;font-family:var(--fm);font-size:.68rem;letter-spacing:4px;color:var(--yellow);text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .3s forwards}
+.hero-tag{display:inline-block;font-family:"Space Mono",monospace;font-size:.68rem;letter-spacing:4px;color:var(--yellow);text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .3s forwards}
 .hero-tag::before{content:"[ "}.hero-tag::after{content:" ]"}
-.hero-title{font-family:var(--fd);font-size:clamp(5rem,14vw,13rem);line-height:.88;letter-spacing:8px;color:var(--white);opacity:0;animation:fadeUp .8s .5s forwards}
+.hero-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(5rem,14vw,13rem);line-height:.88;letter-spacing:8px;color:var(--white);opacity:0;animation:fadeUp .8s .5s forwards}
 .hero-title .accent{color:var(--yellow);text-shadow:0 0 60px rgba(255,214,0,.4)}
 .hero-sub{font-size:1.05rem;color:rgba(255,248,225,.85);margin-top:2rem;line-height:1.75;max-width:560px;margin-left:auto;margin-right:auto;opacity:0;animation:fadeUp .8s .7s forwards}
 .hero-acts{margin-top:3rem;display:flex;gap:1.5rem;justify-content:center;align-items:center;opacity:0;animation:fadeUp .8s .9s forwards}
-.btn-p{background:var(--yellow);color:var(--black);padding:1rem 2.5rem;font-family:var(--fm);font-size:.75rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;font-weight:700;cursor:none;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);transition:transform .3s,box-shadow .3s}
+.btn-p{background:var(--yellow);color:var(--black);padding:1rem 2.5rem;font-family:"Space Mono",monospace;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;font-weight:700;cursor:none;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);transition:transform .3s,box-shadow .3s}
 .btn-p:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(255,214,0,.5)}
-.btn-g{color:var(--white);font-family:var(--fm);font-size:.75rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;cursor:none;display:flex;align-items:center;gap:.5rem;transition:color .3s}
+.btn-g{color:var(--white);font-family:"Space Mono",monospace;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;cursor:none;display:flex;align-items:center;gap:.5rem;transition:color .3s}
 .btn-g:hover{color:var(--yellow)}
 .hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fadeUp .8s 1.2s forwards;z-index:3}
-.hero-scroll span{font-family:var(--fm);font-size:.58rem;letter-spacing:3px;color:rgba(255,248,225,.6);text-transform:uppercase}
+.hero-scroll span{font-family:"Space Mono",monospace;font-size:.58rem;letter-spacing:3px;color:rgba(255,248,225,.6);text-transform:uppercase}
 .scroll-line{width:1px;height:60px;background:linear-gradient(var(--yellow),transparent);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* MARQUEE */
 .marquee-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1rem 0}
 .marquee{display:flex;gap:4rem;animation:marquee 20s linear infinite;white-space:nowrap}
-.marquee-item{font-family:var(--fd);font-size:1.1rem;letter-spacing:4px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:1rem}
+.marquee-item{font-family:"Bebas Neue",sans-serif;font-size:1.1rem;letter-spacing:4px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:1rem}
 .marquee-dot{width:6px;height:6px;background:var(--yellow);border-radius:50%;flex-shrink:0}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* STATS */
 .stats-strip{border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden}
 .stat-item{padding:2.5rem 2rem;text-align:center;border-right:1px solid var(--border);position:relative;overflow:hidden}
 .stat-item:last-child{border-right:none}
 .stat-item::before{content:"";position:absolute;inset:0;background:var(--yellow);transform:scaleY(0);transform-origin:bottom;transition:transform .4s cubic-bezier(.16,1,.3,1);z-index:0}
 .stat-item:hover::before{transform:scaleY(1)}
 .stat-item:hover .sn,.stat-item:hover .sl{color:var(--black)}
-.sn{font-family:var(--fd);font-size:3rem;letter-spacing:2px;color:var(--white);position:relative;z-index:1;transition:color .2s}
-.sl{font-family:var(--fm);font-size:.58rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;position:relative;z-index:1;transition:color .2s;margin-top:.3rem}
+.sn{font-family:"Bebas Neue",sans-serif;font-size:3rem;letter-spacing:2px;color:var(--white);position:relative;z-index:1;transition:color .2s}
+.sl{font-family:"Space Mono",monospace;font-size:.58rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;position:relative;z-index:1;transition:color .2s;margin-top:.3rem}
+
+/* SECTIONS */
 section{padding:7rem 3rem}
-.sec-label{font-family:var(--fm);font-size:.63rem;letter-spacing:4px;color:var(--yellow);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+.sec-label{font-family:"Space Mono",monospace;font-size:.63rem;letter-spacing:4px;color:var(--yellow);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
 .sec-label::before{content:"";display:block;width:30px;height:1px;background:var(--yellow)}
-.sec-title{font-family:var(--fd);font-size:clamp(2.5rem,6vw,5rem);line-height:1;letter-spacing:3px;margin-bottom:1rem}
+.sec-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.5rem,6vw,5rem);line-height:1;letter-spacing:3px;margin-bottom:1rem}
 .sec-desc{color:var(--muted);font-size:.93rem;line-height:1.8;max-width:600px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem;flex-wrap:wrap;gap:2rem}
 .reveal{opacity:0;transform:translateY(36px);transition:opacity .7s,transform .7s}
 .reveal.visible{opacity:1;transform:translateY(0)}
 .reveal-delay-1{transition-delay:.08s}.reveal-delay-2{transition-delay:.16s}
-/* VIDEO CARD */
-.vcard{position:relative;overflow:hidden;cursor:none;background:#000}
-.vcvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.vcoverlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.08) 55%,transparent 100%);display:flex;align-items:center;justify-content:center;transition:background .2s}
-.vcard:hover .vcoverlay{background:linear-gradient(to top,rgba(0,0,0,.95) 0%,rgba(0,0,0,.3) 55%,rgba(0,0,0,.1) 100%)}
-.vcplay{width:64px;height:64px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center;transform:scale(.75);opacity:0;transition:transform .22s,opacity .22s,box-shadow .22s;flex-shrink:0}
+
+/* ── VIDEO CARD ── */
+.vcard{position:relative;overflow:hidden;cursor:none;background:#111;}
+
+/* Thumbnail layer */
+.vcard-thumb{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  cursor:none;transition:transform .4s;
+}
+.vcard:hover .vcard-thumb{transform:scale(1.05)}
+.vcard-thumb-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.1) 55%,transparent 100%);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.vcard:hover .vcard-thumb-overlay{background:linear-gradient(to top,rgba(0,0,0,.95) 0%,rgba(0,0,0,.3) 55%,rgba(0,0,0,.1) 100%)}
+.vcplay{
+  width:64px;height:64px;border-radius:50%;background:var(--yellow);
+  display:flex;align-items:center;justify-content:center;
+  transform:scale(.75);opacity:0;
+  transition:transform .22s,opacity .22s,box-shadow .22s;flex-shrink:0;
+}
 .vcard:hover .vcplay{transform:scale(1);opacity:1;box-shadow:0 0 50px rgba(255,214,0,.7)}
-.vcbadge{position:absolute;top:.9rem;right:.9rem;z-index:2;background:var(--yellow);color:var(--black);font-family:var(--fm);font-size:.55rem;letter-spacing:1px;padding:.28rem .65rem;font-weight:700}
-.vcinfo{position:absolute;bottom:0;left:0;right:0;padding:1rem 1.2rem;z-index:2;transform:translateY(6px);transition:transform .22s}
+
+/* iFrame layer — shown after click */
+.vcard-iframe-wrap{
+  position:absolute;inset:0;background:#000;
+  display:flex;align-items:center;justify-content:center;
+}
+.vcard-iframe-wrap iframe{
+  width:100%;height:100%;border:none;display:block;
+}
+.vcard-close{
+  position:absolute;top:.6rem;right:.6rem;z-index:10;
+  background:rgba(0,0,0,.8);border:1px solid var(--yellow);
+  color:var(--yellow);font-size:.75rem;font-family:"Space Mono",monospace;
+  letter-spacing:1px;padding:.3rem .7rem;cursor:none;
+  transition:background .2s;
+}
+.vcard-close:hover{background:var(--yellow);color:var(--black)}
+
+/* Badges & info */
+.vcbadge{position:absolute;top:.9rem;right:.9rem;z-index:5;background:var(--yellow);color:var(--black);font-family:"Space Mono",monospace;font-size:.55rem;letter-spacing:1px;padding:.28rem .65rem;font-weight:700}
+.vcinfo{position:absolute;bottom:0;left:0;right:0;padding:1rem 1.2rem;z-index:5;transform:translateY(6px);transition:transform .22s;pointer-events:none}
 .vcard:hover .vcinfo{transform:translateY(0)}
-.vctag{font-family:var(--fm);font-size:.55rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:.25rem}
-.vctitle{font-family:var(--fd);font-size:1.05rem;letter-spacing:2px;line-height:1.2;color:var(--white)}
-/* PORTFOLIO */
+.vctag{font-family:"Space Mono",monospace;font-size:.55rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:.25rem}
+.vctitle{font-family:"Bebas Neue",sans-serif;font-size:1.05rem;letter-spacing:2px;line-height:1.2;color:var(--white)}
+
+/* PORTFOLIO GRID */
 #portfolio{background:var(--deep)}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:420px 260px;gap:3px}
-.pgrid .vcard:first-child{grid-column:span 2}
+.pgrid .vcard:first-child{grid-column:span 2;height:auto}
 .pgrid .vcard{height:100%}
+
 /* CLIPPINGS */
 #clippings{background:var(--black);overflow:hidden}
 .clip-scroll{display:flex;gap:3px;overflow-x:auto;scroll-snap-type:x mandatory;margin:2rem -3rem 3px;padding:0 3rem;scrollbar-width:none}
@@ -92,19 +146,21 @@ section{padding:7rem 3rem}
 .clip-v{flex:0 0 210px;aspect-ratio:9/16;scroll-snap-align:start}
 .clip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
 .clip-grid .vcard{aspect-ratio:16/9}
+
 /* FEATURED */
 #featured{background:var(--deep)}
 .feat-duo{display:grid;grid-template-columns:1fr 1fr;gap:3px}
 .feat-duo .vcard{aspect-ratio:16/10}
 .feat-body{background:var(--card);border:1px solid var(--border);padding:2.5rem;display:flex;flex-direction:column;justify-content:center}
-.fbtag{font-family:var(--fm);font-size:.58rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:.5rem}
-.fbtitle{font-family:var(--fd);font-size:2.2rem;letter-spacing:3px;line-height:1.05;margin-bottom:1rem}
+.fbtag{font-family:"Space Mono",monospace;font-size:.58rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:.5rem}
+.fbtitle{font-family:"Bebas Neue",sans-serif;font-size:2.2rem;letter-spacing:3px;line-height:1.05;margin-bottom:1rem}
 .fbdesc{color:var(--muted);font-size:.88rem;line-height:1.8;margin-bottom:1.5rem}
 .fbmeta{display:flex;gap:2rem}
-.fbml{font-family:var(--fm);font-size:.52rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem}
+.fbml{font-family:"Space Mono",monospace;font-size:.52rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem}
 .fbmv{font-size:.9rem;font-weight:500}
 .feat-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:3px}
 .feat-row3 .vcard{aspect-ratio:16/9}
+
 /* ABOUT */
 #about{overflow:hidden}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
@@ -116,61 +172,47 @@ section{padding:7rem 3rem}
 .about-imgov{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,8,0,.6) 0%,transparent 50%);pointer-events:none}
 .about-stats{position:absolute;bottom:-1px;left:-1px;right:-1px;background:var(--yellow);color:var(--black);padding:.9rem 1.5rem;display:flex;justify-content:space-between}
 .as{text-align:center}
-.asn{font-family:var(--fd);font-size:1.5rem}
-.asl{font-family:var(--fm);font-size:.52rem;letter-spacing:2px;text-transform:uppercase}
-.about-title{font-family:var(--fd);font-size:clamp(2.5rem,5vw,4rem);letter-spacing:3px;line-height:1.05;margin-bottom:2rem}
+.asn{font-family:"Bebas Neue",sans-serif;font-size:1.5rem}
+.asl{font-family:"Space Mono",monospace;font-size:.52rem;letter-spacing:2px;text-transform:uppercase}
+.about-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:3px;line-height:1.05;margin-bottom:2rem}
 .about-title em{color:var(--yellow);font-style:normal}
 .about-text{color:var(--muted);font-size:.93rem;line-height:1.9;margin-bottom:1.5rem}
 .skills{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem}
-.skill{background:transparent;border:1px solid var(--border);font-family:var(--fm);font-size:.58rem;letter-spacing:2px;color:var(--muted);padding:.4rem .8rem;text-transform:uppercase;transition:border-color .3s,color .3s}
+.skill{background:transparent;border:1px solid var(--border);font-family:"Space Mono",monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted);padding:.4rem .8rem;text-transform:uppercase;transition:border-color .3s,color .3s}
 .skill:hover{border-color:var(--yellow);color:var(--yellow)}
+
 /* CONTACT */
 #contact{background:var(--deep);position:relative;overflow:hidden}
-.cbg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:20vw;color:rgba(255,214,0,.025);white-space:nowrap;user-select:none;pointer-events:none}
+.cbg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:"Bebas Neue",sans-serif;font-size:20vw;color:rgba(255,214,0,.025);white-space:nowrap;user-select:none;pointer-events:none}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;position:relative;z-index:2}
-.ctitle{font-family:var(--fd);font-size:clamp(2.5rem,5vw,4.5rem);letter-spacing:3px;line-height:1.05;margin-bottom:1.5rem}
+.ctitle{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);letter-spacing:3px;line-height:1.05;margin-bottom:1.5rem}
 .ctitle span{color:var(--yellow)}
 .csub{color:var(--muted);font-size:.93rem;line-height:1.8;margin-bottom:3rem}
 .clinks{display:flex;flex-direction:column;gap:1rem}
 .clink{display:flex;align-items:center;gap:1rem;text-decoration:none;color:var(--white);padding:1rem 1.5rem;border:1px solid var(--border);transition:border-color .3s,background .3s;cursor:none}
 .clink:hover{border-color:var(--yellow);background:rgba(255,214,0,.04)}
 .clico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.cllabel{font-family:var(--fm);font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.cllabel{font-family:"Space Mono",monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
 .clval{font-size:.88rem}
-.ftitle{font-family:var(--fd);font-size:1.5rem;letter-spacing:2px;margin-bottom:2rem}
+.ftitle{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:2px;margin-bottom:2rem}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
 .fgroup{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
-.flabel{font-family:var(--fm);font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
-.finput,.ftextarea{background:transparent;border:1px solid var(--border);color:var(--white);padding:.9rem 1rem;font-family:var(--fb);font-size:.88rem;outline:none;transition:border-color .3s;resize:none;width:100%}
+.flabel{font-family:"Space Mono",monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.finput,.ftextarea{background:transparent;border:1px solid var(--border);color:var(--white);padding:.9rem 1rem;font-family:"DM Sans",sans-serif;font-size:.88rem;outline:none;transition:border-color .3s;resize:none;width:100%}
 .finput:focus,.ftextarea:focus{border-color:var(--yellow)}
 .ftextarea{min-height:120px}
-.fsubmit{width:100%;background:var(--yellow);color:var(--black);border:none;padding:1.1rem;font-family:var(--fm);font-size:.73rem;letter-spacing:3px;text-transform:uppercase;cursor:none;font-weight:700;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:transform .3s,box-shadow .3s}
+.fsubmit{width:100%;background:var(--yellow);color:var(--black);border:none;padding:1.1rem;font-family:"Space Mono",monospace;font-size:.73rem;letter-spacing:3px;text-transform:uppercase;cursor:none;font-weight:700;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:transform .3s,box-shadow .3s}
 .fsubmit:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,214,0,.35)}
+
 footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center}
-.foot-logo{font-family:var(--fd);font-size:1.5rem;letter-spacing:4px}
+.foot-logo{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:4px}
 .foot-logo span{color:var(--yellow)}
-.foot-copy{font-family:var(--fm);font-size:.58rem;letter-spacing:2px;color:var(--muted)}
+.foot-copy{font-family:"Space Mono",monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted)}
 .foot-socs{display:flex;gap:1rem}
 .foot-soc{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--muted);transition:border-color .3s,color .3s,background .3s;cursor:none}
 .foot-soc:hover{border-color:var(--yellow);color:var(--yellow);background:rgba(255,214,0,.06)}
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--yellow),transparent);opacity:.2}
-/* MODAL */
-.modal{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.97);backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
-.modal.active{opacity:1;pointer-events:all}
-.modal-inner{width:92%;max-width:1060px;position:relative}
-.modal-close{position:absolute;top:-3rem;right:0;background:none;border:1px solid rgba(255,214,0,.3);color:var(--white);width:42px;height:42px;font-size:1.1rem;cursor:none;display:flex;align-items:center;justify-content:center;transition:border-color .3s,color .3s}
-.modal-close:hover{border-color:var(--yellow);color:var(--yellow)}
-.modal-wrap{aspect-ratio:16/9;background:#000;border:1px solid rgba(255,214,0,.15);overflow:hidden;position:relative}
-.mvi{position:absolute;inset:0;display:none}
-.mspinner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:#000;z-index:10}
-.spin-ring{width:42px;height:42px;border:2px solid rgba(255,214,0,.2);border-top-color:var(--yellow);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spin-txt{font-family:var(--fm);font-size:.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
-.modal-meta{margin-top:1rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem}
-.modal-tag{font-family:var(--fm);font-size:.62rem;letter-spacing:2px;color:var(--yellow);text-transform:uppercase}
-.modal-title{font-family:var(--fd);font-size:1.6rem;letter-spacing:3px}
-.modal-hint{font-family:var(--fm);font-size:.58rem;letter-spacing:1px;color:var(--muted)}
-.modal-hint a{color:var(--yellow);text-decoration:none}
+
 @media(max-width:900px){
   .pgrid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
   .pgrid .vcard:first-child{grid-column:span 2;height:300px}
@@ -185,43 +227,49 @@ footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justi
   nav{padding:1rem 1.5rem}.nav-links{display:none}
   section{padding:5rem 1.5rem}
   .pgrid{grid-template-columns:1fr;grid-template-rows:auto}
-  .pgrid .vcard:first-child,.pgrid .vcard{grid-column:auto;height:220px}
+  .pgrid .vcard{height:220px}
+  .pgrid .vcard:first-child{grid-column:auto}
   .clip-grid{grid-template-columns:1fr}
   .feat-row3{grid-template-columns:1fr}
   .stats-strip{grid-template-columns:1fr 1fr}
   footer{flex-direction:column;gap:1.5rem;text-align:center}
   .frow{grid-template-columns:1fr}
-  .modal-inner{width:96%}
 }
 </style>
 </head>
 <body>
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
+
 <nav id="nav">
   <a href="#home" class="nav-logo">EMY<span>NICE</span></a>
   <ul class="nav-links">
-    <li><a href="#portfolio">Portfolio</a></li><li><a href="#clippings">Clippings</a></li>
-    <li><a href="#featured">Featured</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#clippings">Clippings</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
   <a href="#contact" class="nav-cta">Hire Me</a>
 </nav>
+
 <section id="home">
-  <div class="hero-vid">
-    <video autoplay muted loop playsinline preload="auto" src="https://drive.google.com/uc?export=download&id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn"></video>
-  </div>
-  <div class="hero-ov"></div><div class="hero-grid"></div>
+  <div class="hero-bg-img"></div>
+  <div class="hero-grid"></div>
   <div class="hero-content">
     <div class="hero-tag">Video Editor &amp; Creator</div>
     <h1 class="hero-title">EMY<span class="accent">NICE</span></h1>
     <p class="hero-sub">I'm a video editor who helps creators and brands turn their content into engaging clips that attract attention and keep viewers watching.</p>
     <div class="hero-acts">
       <a href="#portfolio" class="btn-p">Watch My Work</a>
-      <a href="#contact" class="btn-g">Let's Collaborate <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="#contact" class="btn-g">Let's Collaborate
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
   <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
+
 <div class="marquee-wrap"><div class="marquee">
   <span class="marquee-item"><span class="marquee-dot"></span>Video Editing</span>
   <span class="marquee-item"><span class="marquee-dot"></span>Cinematic Cuts</span>
@@ -238,159 +286,433 @@ footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justi
   <span class="marquee-item"><span class="marquee-dot"></span>Highlight Reels</span>
   <span class="marquee-item"><span class="marquee-dot"></span>Creator Content</span>
 </div></div>
+
 <div class="stats-strip">
   <div class="stat-item reveal"><div class="sn">70+</div><div class="sl">Videos Produced</div></div>
   <div class="stat-item reveal reveal-delay-1"><div class="sn">30K+</div><div class="sl">Views Generated</div></div>
   <div class="stat-item reveal reveal-delay-2"><div class="sn">2+</div><div class="sl">Years Experience</div></div>
   <div class="stat-item reveal reveal-delay-3"><div class="sn">∞</div><div class="sl">Stories to Tell</div></div>
 </div>
+
 <section id="portfolio">
   <div class="sec-hdr">
     <div><div class="sec-label reveal">Video Portfolio</div><h2 class="sec-title reveal reveal-delay-1">SELECTED<br>WORKS</h2></div>
-    <p class="sec-desc reveal reveal-delay-2">Hover to preview — click to watch full screen.</p>
+    <p class="sec-desc reveal reveal-delay-2">Click any thumbnail to play instantly.</p>
   </div>
   <div class="pgrid">
-    <div class="vcard  reveal " onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(0)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+    <div class="vcard  reveal " id="wrap_player_0_">
+  <div class="vcard-thumb" id="thumb_player_0_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn&sz=w800')"
+       onclick="playCard('player_0_','https://drive.google.com/file/d/1G2isg2IJjltPYII7eO8tzhg0T12rPtNn/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_0_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_0_')">✕</button>
+  </div>
   <span class="vcbadge">FEATURED</span>
-  <div class="vcinfo"><div class="vctag">Clip 01</div><div class="vctitle">Cinematic storytelling at its finest</div></div>
-</div> <div class="vcard  reveal reveal-delay-1" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(1)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 01</div>
+    <div class="vctitle">Cinematic storytelling at its finest</div>
+  </div>
+</div>
+    <div class="vcard  reveal reveal-delay-1" id="wrap_player_1_">
+  <div class="vcard-thumb" id="thumb_player_1_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2&sz=w800')"
+       onclick="playCard('player_1_','https://drive.google.com/file/d/1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_1_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_1_')">✕</button>
+  </div>
   <span class="vcbadge">CREATOR</span>
-  <div class="vcinfo"><div class="vctag">Clip 02</div><div class="vctitle">Short-form content that hits different</div></div>
-</div> <div class="vcard  reveal reveal-delay-2" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(2)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 02</div>
+    <div class="vctitle">Short-form content that hits different</div>
+  </div>
+</div>
+    <div class="vcard  reveal reveal-delay-2" id="wrap_player_2_">
+  <div class="vcard-thumb" id="thumb_player_2_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA&sz=w800')"
+       onclick="playCard('player_2_','https://drive.google.com/file/d/1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_2_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_2_')">✕</button>
+  </div>
   <span class="vcbadge">BRAND</span>
-  <div class="vcinfo"><div class="vctag">Clip 03</div><div class="vctitle">The edit that turned heads</div></div>
-</div> <div class="vcard  reveal " onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(3)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 03</div>
+    <div class="vctitle">The edit that turned heads</div>
+  </div>
+</div>
+    <div class="vcard  reveal " id="wrap_player_3_">
+  <div class="vcard-thumb" id="thumb_player_3_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800')"
+       onclick="playCard('player_3_','https://drive.google.com/file/d/1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_3_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_3_')">✕</button>
+  </div>
   <span class="vcbadge">VIRAL</span>
-  <div class="vcinfo"><div class="vctag">Clip 04</div><div class="vctitle">Energy, pace, precision — every frame counts</div></div>
-</div> <div class="vcard  reveal reveal-delay-1" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(4)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 04</div>
+    <div class="vctitle">Energy, pace, precision — every frame counts</div>
+  </div>
+</div>
+    <div class="vcard  reveal reveal-delay-1" id="wrap_player_4_">
+  <div class="vcard-thumb" id="thumb_player_4_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800')"
+       onclick="playCard('player_4_','https://drive.google.com/file/d/12SZ3_oayzGj47r1qO1bknLXKndE4PXfW/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_4_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_4_')">✕</button>
+  </div>
   <span class="vcbadge">HIGHLIGHTS</span>
-  <div class="vcinfo"><div class="vctag">Clip 05</div><div class="vctitle">Raw footage to refined story</div></div>
-</div> <div class="vcard  reveal reveal-delay-2" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(5)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 05</div>
+    <div class="vctitle">Raw footage to refined story</div>
+  </div>
+</div>
+    <div class="vcard  reveal reveal-delay-2" id="wrap_player_5_">
+  <div class="vcard-thumb" id="thumb_player_5_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V&sz=w800')"
+       onclick="playCard('player_5_','https://drive.google.com/file/d/1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_5_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_5_')">✕</button>
+  </div>
   <span class="vcbadge">CLIP 06</span>
-  <div class="vcinfo"><div class="vctag">Clip 06</div><div class="vctitle">Clean cuts, strong hooks, maximum retention</div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 06</div>
+    <div class="vctitle">Clean cuts, strong hooks, maximum retention</div>
+  </div>
 </div>
   </div>
 </section>
+
 <div class="divider"></div>
+
 <section id="clippings">
   <div class="sec-hdr">
     <div><div class="sec-label reveal">Clippings &amp; Highlights</div><h2 class="sec-title reveal reveal-delay-1">VIRAL<br>MOMENTS</h2></div>
-    <p class="sec-desc reveal reveal-delay-2">Hover to preview • Click to play • Scroll for more.</p>
+    <p class="sec-desc reveal reveal-delay-2">Click to play • Scroll sideways for more.</p>
   </div>
   <div class="clip-scroll">
-    <div class="vcard clip-h reveal " onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(0)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">FEATURED</span>
-  <div class="vcinfo"><div class="vctag">Clip 01</div><div class="vctitle">Cinematic storytelling at its finest</div></div>
-</div> <div class="vcard clip-v reveal reveal-delay-1" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(1)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">CREATOR</span>
-  <div class="vcinfo"><div class="vctag">Clip 02</div><div class="vctitle">Short-form content that hits different</div></div>
-</div> <div class="vcard clip-h reveal reveal-delay-2" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(2)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">BRAND</span>
-  <div class="vcinfo"><div class="vctag">Clip 03</div><div class="vctitle">The edit that turned heads</div></div>
-</div> <div class="vcard clip-v reveal " onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(3)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">VIRAL</span>
-  <div class="vcinfo"><div class="vctag">Clip 04</div><div class="vctitle">Energy, pace, precision — every frame counts</div></div>
-</div> <div class="vcard clip-h reveal reveal-delay-1" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(4)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">HIGHLIGHTS</span>
-  <div class="vcinfo"><div class="vctag">Clip 05</div><div class="vctitle">Raw footage to refined story</div></div>
-</div> <div class="vcard clip-v reveal reveal-delay-2" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(5)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+    <div class="vcard clip-h reveal " id="wrap_player_0_clip-h">
+  <div class="vcard-thumb" id="thumb_player_0_clip-h"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn&sz=w800')"
+       onclick="playCard('player_0_clip-h','https://drive.google.com/file/d/1G2isg2IJjltPYII7eO8tzhg0T12rPtNn/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_0_clip-h" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_0_clip-h')">✕</button>
+  </div>
+  <span class="vcbadge">CLIP 01</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 01</div>
+    <div class="vctitle">Cinematic storytelling at its finest</div>
+  </div>
+</div>
+    <div class="vcard clip-v reveal reveal-delay-1" id="wrap_player_1_clip-v">
+  <div class="vcard-thumb" id="thumb_player_1_clip-v"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2&sz=w800')"
+       onclick="playCard('player_1_clip-v','https://drive.google.com/file/d/1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_1_clip-v" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_1_clip-v')">✕</button>
+  </div>
+  <span class="vcbadge">CLIP 02</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 02</div>
+    <div class="vctitle">Short-form content that hits different</div>
+  </div>
+</div>
+    <div class="vcard clip-h reveal reveal-delay-2" id="wrap_player_2_clip-h">
+  <div class="vcard-thumb" id="thumb_player_2_clip-h"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA&sz=w800')"
+       onclick="playCard('player_2_clip-h','https://drive.google.com/file/d/1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_2_clip-h" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_2_clip-h')">✕</button>
+  </div>
+  <span class="vcbadge">CLIP 03</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 03</div>
+    <div class="vctitle">The edit that turned heads</div>
+  </div>
+</div>
+    <div class="vcard clip-v reveal " id="wrap_player_3_clip-v">
+  <div class="vcard-thumb" id="thumb_player_3_clip-v"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800')"
+       onclick="playCard('player_3_clip-v','https://drive.google.com/file/d/1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_3_clip-v" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_3_clip-v')">✕</button>
+  </div>
+  <span class="vcbadge">CLIP 04</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 04</div>
+    <div class="vctitle">Energy, pace, precision — every frame counts</div>
+  </div>
+</div>
+    <div class="vcard clip-h reveal reveal-delay-1" id="wrap_player_4_clip-h">
+  <div class="vcard-thumb" id="thumb_player_4_clip-h"
+       style="background-image:url('https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800')"
+       onclick="playCard('player_4_clip-h','https://drive.google.com/file/d/12SZ3_oayzGj47r1qO1bknLXKndE4PXfW/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_4_clip-h" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_4_clip-h')">✕</button>
+  </div>
+  <span class="vcbadge">CLIP 05</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 05</div>
+    <div class="vctitle">Raw footage to refined story</div>
+  </div>
+</div>
+    <div class="vcard clip-v reveal reveal-delay-2" id="wrap_player_5_clip-v">
+  <div class="vcard-thumb" id="thumb_player_5_clip-v"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V&sz=w800')"
+       onclick="playCard('player_5_clip-v','https://drive.google.com/file/d/1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_5_clip-v" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_5_clip-v')">✕</button>
+  </div>
   <span class="vcbadge">CLIP 06</span>
-  <div class="vcinfo"><div class="vctag">Clip 06</div><div class="vctitle">Clean cuts, strong hooks, maximum retention</div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 06</div>
+    <div class="vctitle">Clean cuts, strong hooks, maximum retention</div>
+  </div>
 </div>
   </div>
   <div class="clip-grid">
-    <div class="vcard  reveal " onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(3)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">VIRAL</span>
-  <div class="vcinfo"><div class="vctag">Clip 04</div><div class="vctitle">Energy, pace, precision — every frame counts</div></div>
-</div> <div class="vcard  reveal reveal-delay-1" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(4)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">HIGHLIGHTS</span>
-  <div class="vcinfo"><div class="vctag">Clip 05</div><div class="vctitle">Raw footage to refined story</div></div>
-</div> <div class="vcard  reveal reveal-delay-2" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(5)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+    <div class="vcard  reveal " id="wrap_player_3_">
+  <div class="vcard-thumb" id="thumb_player_3_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800')"
+       onclick="playCard('player_3_','https://drive.google.com/file/d/1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_3_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_3_')">✕</button>
+  </div>
+  <span class="vcbadge">CLIP 04</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 04</div>
+    <div class="vctitle">Energy, pace, precision — every frame counts</div>
+  </div>
+</div>
+    <div class="vcard  reveal reveal-delay-1" id="wrap_player_4_">
+  <div class="vcard-thumb" id="thumb_player_4_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800')"
+       onclick="playCard('player_4_','https://drive.google.com/file/d/12SZ3_oayzGj47r1qO1bknLXKndE4PXfW/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_4_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_4_')">✕</button>
+  </div>
+  <span class="vcbadge">CLIP 05</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 05</div>
+    <div class="vctitle">Raw footage to refined story</div>
+  </div>
+</div>
+    <div class="vcard  reveal reveal-delay-2" id="wrap_player_5_">
+  <div class="vcard-thumb" id="thumb_player_5_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V&sz=w800')"
+       onclick="playCard('player_5_','https://drive.google.com/file/d/1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_5_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_5_')">✕</button>
+  </div>
   <span class="vcbadge">CLIP 06</span>
-  <div class="vcinfo"><div class="vctag">Clip 06</div><div class="vctitle">Clean cuts, strong hooks, maximum retention</div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 06</div>
+    <div class="vctitle">Clean cuts, strong hooks, maximum retention</div>
+  </div>
 </div>
   </div>
 </section>
+
 <div class="divider"></div>
+
 <section id="featured">
   <div class="sec-hdr">
     <div><div class="sec-label reveal">Featured Projects</div><h2 class="sec-title reveal reveal-delay-1">SIGNATURE<br>WORKS</h2></div>
     <p class="sec-desc reveal reveal-delay-2">Major projects — concept, process, final cut.</p>
   </div>
   <div class="feat-duo">
-    <div class="vcard  reveal " onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(0)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+    <div class="vcard  reveal " id="wrap_player_0_">
+  <div class="vcard-thumb" id="thumb_player_0_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn&sz=w800')"
+       onclick="playCard('player_0_','https://drive.google.com/file/d/1G2isg2IJjltPYII7eO8tzhg0T12rPtNn/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_0_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_0_')">✕</button>
+  </div>
   <span class="vcbadge">FEATURED</span>
-  <div class="vcinfo"><div class="vctag">Clip 01</div><div class="vctitle">Cinematic storytelling at its finest</div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 01</div>
+    <div class="vctitle">Cinematic storytelling at its finest</div>
+  </div>
 </div>
     <div class="feat-body reveal reveal-delay-1">
-      <div class="fbtag">Storytelling</div><div class="fbtitle">HUMAN FIRST</div>
+      <div class="fbtag">Storytelling</div>
+      <div class="fbtitle">HUMAN FIRST</div>
       <div class="fbdesc">A raw documentary edit — hours of real footage shaped into a powerful story. Every cut intentional, every frame meaningful.</div>
-      <div class="fbmeta"><div><div class="fbml">Format</div><div class="fbmv">4K Edit</div></div><div><div class="fbml">Type</div><div class="fbmv">Documentary</div></div><div><div class="fbml">Year</div><div class="fbmv">2024</div></div></div>
+      <div class="fbmeta">
+        <div><div class="fbml">Format</div><div class="fbmv">4K Edit</div></div>
+        <div><div class="fbml">Type</div><div class="fbmv">Documentary</div></div>
+        <div><div class="fbml">Year</div><div class="fbmv">2024</div></div>
+      </div>
     </div>
   </div>
   <div class="feat-duo" style="margin-top:3px">
     <div class="feat-body reveal">
-      <div class="fbtag">Narrative</div><div class="fbtitle">AFTER DARK</div>
+      <div class="fbtag">Narrative</div>
+      <div class="fbtitle">AFTER DARK</div>
       <div class="fbdesc">Short narrative film edited with night footage — darkness, contrast, and precise pacing building emotional tension frame by frame.</div>
-      <div class="fbmeta"><div><div class="fbml">Format</div><div class="fbmv">Short Film</div></div><div><div class="fbml">Type</div><div class="fbmv">Narrative</div></div><div><div class="fbml">Year</div><div class="fbmv">2024</div></div></div>
+      <div class="fbmeta">
+        <div><div class="fbml">Format</div><div class="fbmv">Short Film</div></div>
+        <div><div class="fbml">Type</div><div class="fbmv">Narrative</div></div>
+        <div><div class="fbml">Year</div><div class="fbmv">2024</div></div>
+      </div>
     </div>
-    <div class="vcard  reveal reveal-delay-1" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(1)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
-  <span class="vcbadge">CREATOR</span>
-  <div class="vcinfo"><div class="vctag">Clip 02</div><div class="vctitle">Short-form content that hits different</div></div>
+    <div class="vcard  reveal reveal-delay-1" id="wrap_player_1_">
+  <div class="vcard-thumb" id="thumb_player_1_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2&sz=w800')"
+       onclick="playCard('player_1_','https://drive.google.com/file/d/1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_1_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_1_')">✕</button>
+  </div>
+  <span class="vcbadge">SHORT FILM</span>
+  <div class="vcinfo">
+    <div class="vctag">Clip 02</div>
+    <div class="vctitle">Short-form content that hits different</div>
+  </div>
 </div>
   </div>
-  <div class="feat-row3"> <div class="vcard  reveal reveal-delay-2" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(2)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="feat-row3">
+    <div class="vcard  reveal reveal-delay-2" id="wrap_player_2_">
+  <div class="vcard-thumb" id="thumb_player_2_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA&sz=w800')"
+       onclick="playCard('player_2_','https://drive.google.com/file/d/1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_2_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_2_')">✕</button>
+  </div>
   <span class="vcbadge">BRAND</span>
-  <div class="vcinfo"><div class="vctag">Clip 03</div><div class="vctitle">The edit that turned heads</div></div>
-</div> <div class="vcard  reveal " onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(3)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 03</div>
+    <div class="vctitle">The edit that turned heads</div>
+  </div>
+</div>
+    <div class="vcard  reveal " id="wrap_player_3_">
+  <div class="vcard-thumb" id="thumb_player_3_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-&sz=w800')"
+       onclick="playCard('player_3_','https://drive.google.com/file/d/1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_3_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_3_')">✕</button>
+  </div>
   <span class="vcbadge">VIRAL</span>
-  <div class="vcinfo"><div class="vctag">Clip 04</div><div class="vctitle">Energy, pace, precision — every frame counts</div></div>
-</div> <div class="vcard  reveal reveal-delay-1" onmouseenter="hoverPlay(this)" onmouseleave="hoverStop(this)" onclick="openModal(4)">
-  <video class="vcvid" src="https://drive.google.com/uc?export=download&id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW" preload="none" muted playsinline loop poster="https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800"></video>
-  <div class="vcoverlay"><div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div></div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 04</div>
+    <div class="vctitle">Energy, pace, precision — every frame counts</div>
+  </div>
+</div>
+    <div class="vcard  reveal reveal-delay-1" id="wrap_player_4_">
+  <div class="vcard-thumb" id="thumb_player_4_"
+       style="background-image:url('https://drive.google.com/thumbnail?id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW&sz=w800')"
+       onclick="playCard('player_4_','https://drive.google.com/file/d/12SZ3_oayzGj47r1qO1bknLXKndE4PXfW/preview')">
+    <div class="vcard-thumb-overlay">
+      <div class="vcplay"><svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#0a0800"/></svg></div>
+    </div>
+  </div>
+  <div class="vcard-iframe-wrap" id="iframe_player_4_" style="display:none">
+    <iframe src="" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+    <button class="vcard-close" onclick="closeCard('player_4_')">✕</button>
+  </div>
   <span class="vcbadge">HIGHLIGHTS</span>
-  <div class="vcinfo"><div class="vctag">Clip 05</div><div class="vctitle">Raw footage to refined story</div></div>
-</div> </div>
+  <div class="vcinfo">
+    <div class="vctag">Clip 05</div>
+    <div class="vctitle">Raw footage to refined story</div>
+  </div>
+</div>
+  </div>
 </section>
+
 <div class="divider"></div>
+
 <section id="about">
   <div class="about-grid">
     <div class="about-visual reveal">
@@ -412,11 +734,15 @@ footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justi
       <h2 class="about-title reveal reveal-delay-1">I EDIT<br>YOUR <em>VISION</em><br>INTO REALITY</h2>
       <p class="about-text reveal reveal-delay-2">I'm Emmynice, a video editor and creator passionate about visual storytelling. I help creators and brands turn their ideas and raw footage into engaging clips that capture attention, tell a clear story, and leave a lasting impression.</p>
       <p class="about-text reveal reveal-delay-2">Every edit is intentional — the pacing, the cuts, the color, the sound. Whether it's short-form social content or a full brand video, I bring the same craft and attention to every frame.</p>
-      <div class="skills reveal"><span class="skill">Video Editing</span><span class="skill">Color Grading</span><span class="skill">Short-Form</span><span class="skill">Storytelling</span><span class="skill">Brand Content</span><span class="skill">Hooks &amp; Retention</span><span class="skill">Sound Design</span><span class="skill">Creator Edits</span></div>
+      <div class="skills reveal">
+        <span class="skill">Video Editing</span><span class="skill">Color Grading</span><span class="skill">Short-Form</span><span class="skill">Storytelling</span><span class="skill">Brand Content</span><span class="skill">Hooks &amp; Retention</span><span class="skill">Sound Design</span><span class="skill">Creator Edits</span>
+      </div>
     </div>
   </div>
 </section>
+
 <div class="divider"></div>
+
 <section id="contact">
   <div class="cbg">CONTACT</div>
   <div class="cgrid">
@@ -441,7 +767,10 @@ footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justi
     </div>
     <div class="reveal reveal-delay-2">
       <div class="ftitle">SEND A MESSAGE</div>
-      <div class="frow"><div class="fgroup"><label class="flabel">Your Name</label><input type="text" class="finput" placeholder="John Doe"></div><div class="fgroup"><label class="flabel">Email</label><input type="email" class="finput" placeholder="hello@email.com"></div></div>
+      <div class="frow">
+        <div class="fgroup"><label class="flabel">Your Name</label><input type="text" class="finput" placeholder="John Doe"></div>
+        <div class="fgroup"><label class="flabel">Email</label><input type="email" class="finput" placeholder="hello@email.com"></div>
+      </div>
       <div class="fgroup"><label class="flabel">Subject</label><input type="text" class="finput" placeholder="Brand Collab / Video Editing"></div>
       <div class="fgroup"><label class="flabel">Budget Range</label><input type="text" class="finput" placeholder="e.g. $200 – $1000"></div>
       <div class="fgroup"><label class="flabel">Tell me about your project</label><textarea class="ftextarea" placeholder="Describe your vision, goals, timeline..."></textarea></div>
@@ -449,6 +778,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justi
     </div>
   </div>
 </section>
+
 <footer>
   <div class="foot-logo">EMY<span>NICE</span></div>
   <div class="foot-copy">© 2025 EMYNICE. All rights reserved.</div>
@@ -458,65 +788,65 @@ footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justi
     <a href="mailto:Emmyniceola@gmail.com" class="foot-soc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
   </div>
 </footer>
-<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal-inner">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-wrap" id="modalWrap">
-      <div class="mspinner" id="mspinner"><div class="spin-ring"></div><p class="spin-txt">Loading video...</p></div>
-      <div class="mvi" id="mvi0" style="display:none"><video id="mvid0" src="https://drive.google.com/uc?export=download&id=1G2isg2IJjltPYII7eO8tzhg0T12rPtNn" preload="none" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video></div>
-<div class="mvi" id="mvi1" style="display:none"><video id="mvid1" src="https://drive.google.com/uc?export=download&id=1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2" preload="none" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video></div>
-<div class="mvi" id="mvi2" style="display:none"><video id="mvid2" src="https://drive.google.com/uc?export=download&id=1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA" preload="none" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video></div>
-<div class="mvi" id="mvi3" style="display:none"><video id="mvid3" src="https://drive.google.com/uc?export=download&id=1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-" preload="none" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video></div>
-<div class="mvi" id="mvi4" style="display:none"><video id="mvid4" src="https://drive.google.com/uc?export=download&id=12SZ3_oayzGj47r1qO1bknLXKndE4PXfW" preload="none" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video></div>
-<div class="mvi" id="mvi5" style="display:none"><video id="mvid5" src="https://drive.google.com/uc?export=download&id=1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V" preload="none" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video></div>
 
-    </div>
-    <div class="modal-meta">
-      <div>
-        <div class="modal-tag" id="mtag"></div>
-        <div class="modal-title" id="mtitle"></div>
-        <div class="modal-hint">Still slow? <a id="mlink" href="#" target="_blank">Open in Google Drive ↗</a></div>
-      </div>
-    </div>
-  </div>
-</div>
 <script>
-const VIDS = [{"id": "1G2isg2IJjltPYII7eO8tzhg0T12rPtNn", "tag": "Clip 01", "title": "Cinematic storytelling at its finest"}, {"id": "1eaUz3eNEeRHxRiEen0CW2hR8LPxbT2t2", "tag": "Clip 02", "title": "Short-form content that hits different"}, {"id": "1gJnWdE7Ri45P0pq_LuNO5Hx8AAdQ-gQA", "tag": "Clip 03", "title": "The edit that turned heads"}, {"id": "1rkxdS78ooK0lEPNf5cAGdsGovKEo66K-", "tag": "Clip 04", "title": "Energy, pace, precision \u2014 every frame counts"}, {"id": "12SZ3_oayzGj47r1qO1bknLXKndE4PXfW", "tag": "Clip 05", "title": "Raw footage to refined story"}, {"id": "1K2Qe2nO3uj7PZpChWnyTtBgr0YDdE_4V", "tag": "Clip 06", "title": "Clean cuts, strong hooks, maximum retention"}];
+// CURSOR
 const cur=document.getElementById("cursor"),ring=document.getElementById("cursorRing");
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+"px";cur.style.top=my+"px";});
 (function tick(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+"px";ring.style.top=ry+"px";requestAnimationFrame(tick);})();
+
+// NAV
 window.addEventListener("scroll",()=>document.getElementById("nav").classList.toggle("scrolled",scrollY>60));
+
+// REVEAL
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible");}),{threshold:0.05,rootMargin:"0px 0px -20px 0px"});
 document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
-window.addEventListener("scroll",()=>{const h=document.querySelector(".hero-content");if(h)h.style.transform=`translateY(${scrollY*0.2}px)`;});
-function hoverPlay(c){const v=c.querySelector(".vcvid");if(!v)return;v.preload="auto";v.muted=true;v.play().catch(()=>{});}
-function hoverStop(c){const v=c.querySelector(".vcvid");if(!v)return;v.pause();v.currentTime=0;}
-let curVid=null;
-function openModal(i){
-  document.querySelectorAll(".mvi").forEach(el=>el.style.display="none");
-  document.getElementById("mspinner").style.display="flex";
-  const item=document.getElementById("mvi"+i);
-  const vid=document.getElementById("mvid"+i);
-  document.getElementById("mtag").textContent=VIDS[i].tag;
-  document.getElementById("mtitle").textContent=VIDS[i].title;
-  document.getElementById("mlink").href="https://drive.google.com/file/d/"+VIDS[i].id+"/view";
-  item.style.display="block";
-  vid.preload="auto";
-  vid.load();
-  vid.oncanplay=()=>{document.getElementById("mspinner").style.display="none";vid.play().catch(()=>{});};
-  setTimeout(()=>{document.getElementById("mspinner").style.display="none";},4000);
-  curVid=vid;
-  document.getElementById("modal").classList.add("active");
-  document.body.style.overflow="hidden";
+
+// PARALLAX
+window.addEventListener("scroll",()=>{
+  const h=document.querySelector(".hero-content");
+  if(h)h.style.transform=`translateY(${scrollY*0.2}px)`;
+});
+
+// PLAY — swap thumbnail for iframe with Google Drive /preview
+function playCard(pid, embedUrl){
+  const thumb = document.getElementById("thumb_"+pid);
+  const frameWrap = document.getElementById("iframe_"+pid);
+  const iframe = frameWrap.querySelector("iframe");
+  // Load the iframe src now (lazy — only loads when clicked)
+  iframe.src = embedUrl;
+  thumb.style.display = "none";
+  frameWrap.style.display = "flex";
+  // Hide badge & info while playing
+  const wrap = document.getElementById("wrap_"+pid);
+  const badge = wrap.querySelector(".vcbadge");
+  const info  = wrap.querySelector(".vcinfo");
+  if(badge) badge.style.display="none";
+  if(info)  info.style.display="none";
 }
-function closeModal(){
-  if(curVid){curVid.pause();curVid.currentTime=0;curVid=null;}
-  document.getElementById("modal").classList.remove("active");
-  document.body.style.overflow="";
+
+// CLOSE — restore thumbnail
+function closeCard(pid){
+  const thumb = document.getElementById("thumb_"+pid);
+  const frameWrap = document.getElementById("iframe_"+pid);
+  const iframe = frameWrap.querySelector("iframe");
+  iframe.src = ""; // stop video
+  frameWrap.style.display = "none";
+  thumb.style.display = "block";
+  const wrap = document.getElementById("wrap_"+pid);
+  const badge = wrap.querySelector(".vcbadge");
+  const info  = wrap.querySelector(".vcinfo");
+  if(badge) badge.style.display="";
+  if(info)  info.style.display="";
 }
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
-function handleForm(){const b=document.querySelector(".fsubmit");b.textContent="Message Sent ✓";b.style.background="#22c55e";b.style.color="#fff";setTimeout(()=>{b.textContent="Send Inquiry →";b.style.background="";b.style.color="";},3000);}
+
+// FORM
+function handleForm(){
+  const b=document.querySelector(".fsubmit");
+  b.textContent="Message Sent ✓";b.style.background="#22c55e";b.style.color="#fff";
+  setTimeout(()=>{b.textContent="Send Inquiry →";b.style.background="";b.style.color="";},3000);
+}
 </script>
 </body>
 </html>
