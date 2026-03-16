@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMMYNICE — Video Creator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050507;
+    --deep: #0a0a10;
+    --card: #0f0f18;
+    --border: rgba(255,255,255,0.07);
+    --blue: #3b82f6;
+    --electric: #00d4ff;
+    --neon: #ff6b1a;
+    --purple: #a855f7;
+    --white: #f0f0f8;
+    --muted: #8888aa;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed; width: 12px; height: 12px;
+    background: var(--electric); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed; width: 40px; height: 40px;
+    border: 1px solid rgba(0,212,255,0.5); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s, height 0.3s;
+  }
+  body:has(a:hover) .cursor, body:has(button:hover) .cursor { width: 20px; height: 20px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 2px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--electric); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 1.5rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(5,5,7,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 2rem; letter-spacing: 4px;
+    color: var(--white);
+    text-decoration: none;
+    position: relative;
+  }
+  .nav-logo span { color: var(--electric); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); font-size: 0.75rem; letter-spacing: 2px;
+    text-transform: uppercase; text-decoration: none;
+    font-family: var(--font-mono);
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px; background: var(--electric);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--electric); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: transparent; border: 1px solid var(--electric);
+    color: var(--electric); padding: 0.6rem 1.5rem;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none; cursor: none;
+    transition: background 0.3s, color 0.3s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .nav-cta:hover { background: var(--electric); color: var(--black); }
+
+  /* HERO */
+  #home {
+    position: relative; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,212,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(168,85,247,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(255,107,26,0.05) 0%, transparent 50%),
+      var(--black);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridShift 20s linear infinite;
+  }
+  @keyframes gridShift { from { transform: translateY(0); } to { transform: translateY(60px); } }
+
+  .hero-noise {
+    position: absolute; inset: 0; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    text-align: center; max-width: 900px; padding: 0 2rem;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 4px; color: var(--electric);
+    text-transform: uppercase; margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.3s forwards;
+  }
+  .hero-tag::before { content: '[ '; }
+  .hero-tag::after { content: ' ]'; }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 14vw, 14rem);
+    line-height: 0.88; letter-spacing: 8px;
+    color: var(--white);
+    opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
+    position: relative;
+  }
+  .hero-title .accent { color: var(--electric); position: relative; }
+  .hero-title .accent::after {
+    content: attr(data-text);
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--electric), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem; color: var(--muted); margin-top: 2rem;
+    line-height: 1.7; max-width: 500px; margin-left: auto; margin-right: auto;
+    opacity: 0; animation: fadeUp 0.8s 0.7s forwards;
+  }
+  .hero-actions {
+    margin-top: 3rem; display: flex; gap: 1.5rem; justify-content: center; align-items: center;
+    opacity: 0; animation: fadeUp 0.8s 0.9s forwards;
+  }
+  .btn-primary {
+    background: var(--electric); color: var(--black);
+    padding: 1rem 2.5rem; font-family: var(--font-mono);
+    font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+    text-decoration: none; font-weight: 700; cursor: none;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(0,212,255,0.4);
+  }
+  .btn-ghost {
+    color: var(--white); font-family: var(--font-mono);
+    font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+    text-decoration: none; cursor: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: color 0.3s;
+  }
+  .btn-ghost:hover { color: var(--electric); }
+  .btn-ghost svg { transition: transform 0.3s; }
+  .btn-ghost:hover svg { transform: translateX(5px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    opacity: 0; animation: fadeUp 0.8s 1.2s forwards;
+  }
+  .hero-scroll span {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 3px; color: var(--muted); text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(var(--electric), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%,100% { opacity: 0.3; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(1.2); } }
+
+  /* SECTION BASE */
+  section { padding: 8rem 3rem; }
+  .section-label {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    letter-spacing: 4px; color: var(--electric); text-transform: uppercase;
+    margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::before {
+    content: ''; display: block; width: 30px; height: 1px; background: var(--electric);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1; letter-spacing: 3px;
+    margin-bottom: 1.5rem;
+  }
+  .section-desc { color: var(--muted); font-size: 1rem; line-height: 1.8; max-width: 600px; }
+
+  /* REVEAL ANIMATION */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s, transform 0.8s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* VIDEO PORTFOLIO */
+  #portfolio { background: var(--deep); }
+  .portfolio-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 4rem;
+  }
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+  }
+  .video-card {
+    position: relative; overflow: hidden;
+    background: var(--card); cursor: none;
+    aspect-ratio: 16/9;
+  }
+  .video-card:first-child { grid-column: span 2; aspect-ratio: auto; height: 400px; }
+  .video-card-thumb {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    filter: brightness(0.7);
+  }
+  .video-card-thumb-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #0a0a18, #151528);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .video-card:hover .video-card-thumb,
+  .video-card:hover .video-card-thumb-placeholder { transform: scale(1.05); }
+  .video-card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1.5rem;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .video-card:hover .video-card-overlay { opacity: 1; }
+  .video-card-always {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1.5rem; pointer-events: none;
+  }
+  .video-badge {
+    position: absolute; top: 1rem; right: 1rem;
+    background: rgba(0,0,0,0.7); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 1px; color: var(--muted);
+    padding: 0.3rem 0.6rem;
+    backdrop-filter: blur(10px);
+  }
+  .video-title {
+    font-family: var(--font-display); font-size: 1.4rem;
+    letter-spacing: 2px; color: var(--white); line-height: 1.2;
+  }
+  .video-desc { color: var(--muted); font-size: 0.8rem; margin-top: 0.3rem; }
+  .play-btn {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 60px; height: 60px;
+    background: rgba(0,212,255,0.9);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s, opacity 0.3s;
+    opacity: 0;
+  }
+  .video-card:hover .play-btn { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .play-btn svg { fill: var(--black); margin-left: 4px; }
+
+  /* CLIPPINGS */
+  #clippings { overflow: hidden; }
+  .clips-header { margin-bottom: 3rem; }
+  .clips-track-wrapper {
+    position: relative;
+    margin: 0 -3rem;
+  }
+  .clips-track {
+    display: flex; gap: 1rem;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 1rem 3rem 2rem;
+    scrollbar-width: none;
+  }
+  .clips-track::-webkit-scrollbar { display: none; }
+  .clip-card {
+    flex: 0 0 auto;
+    width: 220px; border-radius: 0;
+    overflow: hidden; cursor: none;
+    scroll-snap-align: start;
+    position: relative;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .clip-card:hover { border-color: var(--electric); transform: translateY(-4px); }
+  .clip-card.vertical { aspect-ratio: 9/16; width: 180px; }
+  .clip-card.horizontal { aspect-ratio: 16/9; width: 320px; }
+  .clip-thumb {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .clip-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.4s;
+  }
+  .clip-card:hover .clip-bg { transform: scale(1.08); }
+  .clip-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1rem;
+  }
+  .clip-label {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 2px; color: var(--electric); text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .clip-title { font-size: 0.85rem; font-weight: 500; line-height: 1.3; }
+  .clip-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(0,212,255,0.8);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .clip-card:hover .clip-play { opacity: 1; }
+  .clip-play svg { fill: var(--black); margin-left: 3px; }
+
+  /* X POST EMBED CLIPS */
+  .x-clips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .x-clip-card {
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .x-clip-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--electric), var(--purple));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .x-clip-card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-4px); }
+  .x-clip-card:hover::before { transform: scaleX(1); }
+  .x-icon {
+    width: 28px; height: 28px; margin-bottom: 1rem;
+    fill: var(--muted);
+  }
+  .x-clip-num {
+    font-family: var(--font-display); font-size: 3rem;
+    color: rgba(0,212,255,0.1); position: absolute;
+    top: 0.5rem; right: 1rem; letter-spacing: 2px;
+  }
+  .x-clip-label {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 3px; color: var(--electric); text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .x-clip-title { font-size: 1rem; font-weight: 500; line-height: 1.4; margin-bottom: 0.8rem; }
+  .x-clip-link {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    letter-spacing: 1px; color: var(--electric);
+    text-decoration: none; display: flex; align-items: center; gap: 0.4rem;
+    transition: gap 0.3s;
+  }
+  .x-clip-link:hover { gap: 0.8rem; }
+
+  /* FEATURED */
+  #featured { background: var(--deep); }
+  .featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 4rem; }
+  .featured-card {
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: none; group;
+    transition: border-color 0.4s;
+  }
+  .featured-card:hover { border-color: rgba(0,212,255,0.4); }
+  .featured-visual {
+    aspect-ratio: 16/10;
+    position: relative; overflow: hidden;
+  }
+  .featured-visual-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.6s;
+  }
+  .featured-card:hover .featured-visual-bg { transform: scale(1.05); }
+  .featured-num {
+    position: absolute; top: 1rem; left: 1.5rem;
+    font-family: var(--font-display); font-size: 5rem;
+    color: rgba(255,255,255,0.06); line-height: 1; pointer-events: none;
+  }
+  .featured-tag {
+    position: absolute; bottom: 1rem; right: 1rem;
+    background: var(--electric); color: var(--black);
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 2px; padding: 0.3rem 0.8rem; text-transform: uppercase;
+  }
+  .featured-body { padding: 2rem; }
+  .featured-category {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 3px; color: var(--neon); text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .featured-title {
+    font-family: var(--font-display); font-size: 1.8rem;
+    letter-spacing: 2px; line-height: 1.1; margin-bottom: 1rem;
+  }
+  .featured-desc { color: var(--muted); font-size: 0.85rem; line-height: 1.7; margin-bottom: 1.5rem; }
+  .featured-meta { display: flex; gap: 2rem; }
+  .featured-meta-item { }
+  .featured-meta-label { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.2rem; }
+  .featured-meta-val { font-size: 0.9rem; font-weight: 500; }
+  .featured-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-mono); font-size: 0.65rem;
+    letter-spacing: 2px; color: var(--electric); text-transform: uppercase;
+    text-decoration: none; margin-top: 1.5rem;
+    transition: gap 0.3s;
+  }
+  .featured-link:hover { gap: 1rem; }
+
+  /* ABOUT */
+  #about { position: relative; overflow: hidden; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .about-visual {
+    position: relative;
+  }
+  .about-photo-frame {
+    position: relative;
+    aspect-ratio: 3/4; max-width: 400px;
+  }
+  .about-photo-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--card), #0d0d20);
+    border: 1px solid var(--border);
+  }
+  .about-photo-accent {
+    position: absolute; top: -10px; left: -10px; right: 10px; bottom: 10px;
+    border: 1px solid rgba(0,212,255,0.2);
+    z-index: -1;
+  }
+  .about-photo-content {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .about-initials {
+    font-family: var(--font-display);
+    font-size: 8rem; letter-spacing: 4px;
+    color: rgba(0,212,255,0.08);
+    user-select: none;
+  }
+  .about-stat-strip {
+    position: absolute; bottom: -1px; left: -1px; right: -1px;
+    background: var(--electric); color: var(--black);
+    padding: 1rem 1.5rem;
+    display: flex; justify-content: space-between;
+  }
+  .about-stat { text-align: center; }
+  .about-stat-num { font-family: var(--font-display); font-size: 1.5rem; }
+  .about-stat-label { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; }
+  .about-content {}
+  .about-title {
+    font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 3px; line-height: 1.05; margin-bottom: 2rem;
+  }
+  .about-title em { color: var(--electric); font-style: normal; }
+  .about-text { color: var(--muted); font-size: 0.95rem; line-height: 1.9; margin-bottom: 1.5rem; }
+  .about-skills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .skill-tag {
+    background: transparent; border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 2px;
+    color: var(--muted); padding: 0.4rem 0.8rem; text-transform: uppercase;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .skill-tag:hover { border-color: var(--electric); color: var(--electric); }
+
+  /* CONTACT */
+  #contact { background: var(--deep); position: relative; overflow: hidden; }
+  .contact-bg-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-family: var(--font-display); font-size: 20vw;
+    color: rgba(255,255,255,0.015); white-space: nowrap; user-select: none;
+    pointer-events: none;
+  }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; position: relative; z-index: 2; }
+  .contact-info {}
+  .contact-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4.5rem); letter-spacing: 3px; line-height: 1.05; margin-bottom: 1.5rem; }
+  .contact-title span { color: var(--electric); }
+  .contact-sub { color: var(--muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 3rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    text-decoration: none; color: var(--white);
+    padding: 1rem 1.5rem; border: 1px solid var(--border);
+    transition: border-color 0.3s, background 0.3s;
+    cursor: none;
+  }
+  .contact-link:hover { border-color: var(--electric); background: rgba(0,212,255,0.04); }
+  .contact-link-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .contact-link-text {}
+  .contact-link-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .contact-link-val { font-size: 0.9rem; }
+  .contact-form {}
+  .form-title { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 2rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+  .form-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .form-input, .form-textarea {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--white); padding: 0.9rem 1rem;
+    font-family: var(--font-body); font-size: 0.9rem;
+    outline: none; transition: border-color 0.3s;
+    resize: none;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--electric); }
+  .form-textarea { min-height: 120px; }
+  .form-submit {
+    width: 100%;
+    background: var(--electric); color: var(--black);
+    border: none; padding: 1.1rem;
+    font-family: var(--font-mono); font-size: 0.75rem;
+    letter-spacing: 3px; text-transform: uppercase;
+    cursor: none; font-weight: 700;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,212,255,0.3); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 4px; }
+  .footer-logo span { color: var(--electric); }
+  .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 2px; color: var(--muted); }
+  .footer-socials { display: flex; gap: 1rem; }
+  .footer-social {
+    width: 36px; height: 36px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; color: var(--muted);
+    transition: border-color 0.3s, color 0.3s, background 0.3s;
+    cursor: none;
+  }
+  .footer-social:hover { border-color: var(--electric); color: var(--electric); }
+
+  /* LIGHTBOX */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .lightbox.active { opacity: 1; pointer-events: all; }
+  .lightbox-inner { width: 90%; max-width: 1000px; position: relative; }
+  .lightbox-close {
+    position: absolute; top: -3rem; right: 0;
+    background: none; border: 1px solid var(--border);
+    color: var(--white); width: 40px; height: 40px;
+    font-size: 1.2rem; cursor: none;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .lightbox-close:hover { border-color: var(--electric); color: var(--electric); }
+  .lightbox-video-area {
+    aspect-ratio: 16/9;
+    background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .lightbox-title {
+    font-family: var(--font-display); font-size: 1.8rem; letter-spacing: 3px;
+    margin-top: 1.5rem;
+  }
+  .lightbox-meta { color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; }
+
+  /* GRADIENT DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--electric), transparent);
+    opacity: 0.3;
+    margin: 0;
+  }
+
+  /* VIDEO PREVIEW ELEMENTS */
+  .vp-grad-1 { background: linear-gradient(135deg, #0a1628, #1a0a2e, #0a0a18); }
+  .vp-grad-2 { background: linear-gradient(135deg, #1a0a0a, #0a1a1a, #0a0a18); }
+  .vp-grad-3 { background: linear-gradient(135deg, #0a1a0a, #0a0a1a, #1a0a1a); }
+  .vp-grad-4 { background: linear-gradient(135deg, #1a1a0a, #0a0a1a, #0a1a1a); }
+  .vp-grad-5 { background: linear-gradient(135deg, #0a0a1a, #1a0a0a, #0a1a0a); }
+
+  /* STATS STRIP */
+  .stats-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    overflow: hidden;
+  }
+  .stat-item {
+    padding: 2.5rem 2rem; text-align: center;
+    border-right: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--electric); transform: scaleY(0);
+    transform-origin: bottom; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 0;
+  }
+  .stat-item:hover::before { transform: scaleY(1); }
+  .stat-item:hover .stat-num, .stat-item:hover .stat-label { color: var(--black); }
+  .stat-num {
+    font-family: var(--font-display); font-size: 3rem; letter-spacing: 2px;
+    color: var(--white); position: relative; z-index: 1;
+    transition: color 0.2s;
+  }
+  .stat-label {
+    font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 3px;
+    color: var(--muted); text-transform: uppercase; position: relative; z-index: 1;
+    transition: color 0.2s; margin-top: 0.3rem;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    .portfolio-header { flex-direction: column; gap: 2rem; align-items: flex-start; }
+    .video-grid { grid-template-columns: 1fr; }
+    .video-card:first-child { grid-column: auto; height: 250px; }
+    .x-clips-grid { grid-template-columns: 1fr; }
+    .featured-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+  }
+
+  /* MARQUEE */
+  .marquee-wrap { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1rem 0; }
+  .marquee { display: flex; gap: 4rem; animation: marquee 20s linear infinite; white-space: nowrap; }
+  .marquee-item {
+    font-family: var(--font-display); font-size: 1.2rem;
+    letter-spacing: 4px; color: var(--muted); text-transform: uppercase;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .marquee-dot { width: 6px; height: 6px; background: var(--electric); border-radius: 50%; flex-shrink: 0; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#home" class="nav-logo">EMMY<span>NICE</span></a>
+  <ul class="nav-links">
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#clippings">Clippings</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Video Creator & Storyteller</div>
+    <h1 class="hero-title">
+      EMMY<span class="accent" data-text="NICE">NICE</span>
+    </h1>
+    <p class="hero-sub">
+      Crafting cinematic visual stories that move people. From raw footage to polished frames — every cut tells a story.
+    </p>
+    <div class="hero-actions">
+      <a href="#portfolio" class="btn-primary">Watch My Work</a>
+      <a href="#contact" class="btn-ghost">
+        Let's Collaborate
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span class="marquee-item"><span class="marquee-dot"></span> Video Production</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Cinematic Editing</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Storytelling</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Short-Form Content</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Visual Narratives</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Highlight Reels</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Brand Content</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Video Production</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Cinematic Editing</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Storytelling</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Short-Form Content</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Visual Narratives</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Highlight Reels</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Brand Content</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item reveal">
+    <div class="stat-num">150+</div>
+    <div class="stat-label">Videos Produced</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-1">
+    <div class="stat-num">50K+</div>
+    <div class="stat-label">Views Generated</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-2">
+    <div class="stat-num">3+</div>
+    <div class="stat-label">Years Experience</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-3">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Stories to Tell</div>
+  </div>
+</div>
+
+<!-- VIDEO PORTFOLIO -->
+<section id="portfolio">
+  <div class="portfolio-header">
+    <div>
+      <div class="section-label reveal">Video Portfolio</div>
+      <h2 class="section-title reveal reveal-delay-1">SELECTED<br>WORKS</h2>
+    </div>
+    <p class="section-desc reveal reveal-delay-2">A curated collection of video projects spanning documentary, narrative, brand content, and beyond.</p>
+  </div>
+
+  <div class="video-grid">
+    <!-- Featured Large Card -->
+    <div class="video-card reveal" onclick="openLightbox('Showreel 2024', 'The complete cinematic journey — a compilation of the finest moments, edits, and visual storytelling from 2024.')">
+      <div class="video-card-thumb-placeholder vp-grad-1" style="height:100%">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,0.2)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div class="video-badge">FEATURED</div>
+      <div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="video-card-overlay">
+        <div class="video-title">Showreel 2024</div>
+        <div class="video-desc">Annual cinematic compilation</div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="video-card reveal reveal-delay-1" onclick="openLightbox('Urban Stories', 'A documentary exploring the untold stories of city life through intimate, personal narratives.')">
+      <div class="video-card-thumb-placeholder vp-grad-2" style="aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.3)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div class="video-badge">DOC</div>
+      <div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="video-card-overlay">
+        <div class="video-title">Urban Stories</div>
+        <div class="video-desc">Documentary series</div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="video-card reveal reveal-delay-2" onclick="openLightbox('The Edit', 'Behind the scenes of how raw moments become cinematic masterpieces through the art of video editing.')">
+      <div class="video-card-thumb-placeholder vp-grad-3" style="aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="rgba(255,107,26,0.3)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div class="video-badge">EDIT</div>
+      <div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="video-card-overlay">
+        <div class="video-title">The Edit</div>
+        <div class="video-desc">Process & technique</div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="video-card reveal reveal-delay-1" onclick="openLightbox('Motion Study', 'An experimental video project studying motion, light, and human movement in everyday environments.')">
+      <div class="video-card-thumb-placeholder vp-grad-4" style="aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,0.2)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div class="video-badge">EXP</div>
+      <div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="video-card-overlay">
+        <div class="video-title">Motion Study</div>
+        <div class="video-desc">Experimental visual art</div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="video-card reveal reveal-delay-2" onclick="openLightbox('Brand Campaign', 'High-production commercial video work for brands, blending product storytelling with emotional visual design.')">
+      <div class="video-card-thumb-placeholder vp-grad-5" style="aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.3)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div class="video-badge">BRAND</div>
+      <div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="video-card-overlay">
+        <div class="video-title">Brand Campaign</div>
+        <div class="video-desc">Commercial production</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CLIPPINGS -->
+<section id="clippings">
+  <div class="clips-header">
+    <div class="section-label reveal">Clippings & Highlights</div>
+    <h2 class="section-title reveal reveal-delay-1">VIRAL<br>MOMENTS</h2>
+    <p class="section-desc reveal reveal-delay-2">Short-form content, standout scenes, and edited highlights — the moments that stop the scroll.</p>
+  </div>
+
+  <!-- Horizontal scroll clips showcase -->
+  <div class="clips-track-wrapper reveal">
+    <div class="clips-track">
+      <div class="clip-card vertical">
+        <div class="clip-thumb">
+          <div class="clip-bg vp-grad-1" style="position:absolute;inset:0"></div>
+          <div class="clip-overlay">
+            <div class="clip-label">Clip #01</div>
+            <div class="clip-title">The Viral Moment</div>
+          </div>
+          <div class="clip-play"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        </div>
+      </div>
+      <div class="clip-card horizontal">
+        <div class="clip-thumb">
+          <div class="clip-bg vp-grad-2" style="position:absolute;inset:0"></div>
+          <div class="clip-overlay">
+            <div class="clip-label">Clip #02</div>
+            <div class="clip-title">Raw Emotions Cut</div>
+          </div>
+          <div class="clip-play"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        </div>
+      </div>
+      <div class="clip-card vertical">
+        <div class="clip-thumb">
+          <div class="clip-bg vp-grad-3" style="position:absolute;inset:0"></div>
+          <div class="clip-overlay">
+            <div class="clip-label">Clip #03</div>
+            <div class="clip-title">Golden Hour Edit</div>
+          </div>
+          <div class="clip-play"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        </div>
+      </div>
+      <div class="clip-card horizontal">
+        <div class="clip-thumb">
+          <div class="clip-bg vp-grad-4" style="position:absolute;inset:0"></div>
+          <div class="clip-overlay">
+            <div class="clip-label">Clip #04</div>
+            <div class="clip-title">Cinematic Sequence</div>
+          </div>
+          <div class="clip-play"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        </div>
+      </div>
+      <div class="clip-card vertical">
+        <div class="clip-thumb">
+          <div class="clip-bg vp-grad-5" style="position:absolute;inset:0"></div>
+          <div class="clip-overlay">
+            <div class="clip-label">Clip #05</div>
+            <div class="clip-title">Story Beat</div>
+          </div>
+          <div class="clip-play"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- X / Twitter Clips -->
+  <div style="margin-top: 4rem;">
+    <div class="section-label reveal">Live on X (Twitter)</div>
+    <div class="x-clips-grid">
+      <div class="x-clip-card reveal">
+        <div class="x-clip-num">01</div>
+        <svg class="x-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <div class="x-clip-label">Featured Clip</div>
+        <div class="x-clip-title">Latest clip drop — cinematic storytelling at its finest</div>
+        <a href="https://x.com/emynice_/status/2028699067958870177?s=20" target="_blank" class="x-clip-link">
+          Watch on X
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="x-clip-card reveal reveal-delay-1">
+        <div class="x-clip-num">02</div>
+        <svg class="x-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <div class="x-clip-label">Highlight Reel</div>
+        <div class="x-clip-title">A standout moment — short-form content that hits different</div>
+        <a href="https://x.com/emynice_/status/2011340120721342698?s=20" target="_blank" class="x-clip-link">
+          Watch on X
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="x-clip-card reveal reveal-delay-2">
+        <div class="x-clip-num">03</div>
+        <svg class="x-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <div class="x-clip-label">Viral Cut</div>
+        <div class="x-clip-title">The edit that turned heads — powerful visual storytelling</div>
+        <a href="https://x.com/emynice_/status/1964262052999905587?s=20" target="_blank" class="x-clip-link">
+          Watch on X
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURED PROJECTS -->
+<section id="featured">
+  <div class="section-label reveal">Featured Projects</div>
+  <h2 class="section-title reveal reveal-delay-1">SIGNATURE<br>WORKS</h2>
+  <p class="section-desc reveal reveal-delay-2">Deep dives into the major projects — the concept, the process, the final cut.</p>
+
+  <div class="featured-grid">
+    <div class="featured-card reveal">
+      <div class="featured-visual">
+        <div class="featured-visual-bg vp-grad-1" style="position:absolute;inset:0; display:flex; align-items:center; justify-content:center;">
+          <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="featured-num">01</div>
+        <div class="featured-tag">Documentary</div>
+      </div>
+      <div class="featured-body">
+        <div class="featured-category">Storytelling</div>
+        <div class="featured-title">HUMAN FIRST</div>
+        <div class="featured-desc">A raw, unfiltered documentary exploring real human stories. Shot over three months across multiple locations — capturing life in its most honest form.</div>
+        <div class="featured-meta">
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Duration</div>
+            <div class="featured-meta-val">24 min</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Format</div>
+            <div class="featured-meta-val">4K Cinema</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Year</div>
+            <div class="featured-meta-val">2024</div>
+          </div>
+        </div>
+        <a href="#" class="featured-link" onclick="openLightbox('Human First', 'A raw, unfiltered documentary exploring real human stories. Shot over three months across multiple locations.'); return false;">
+          View Project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="featured-card reveal reveal-delay-1">
+      <div class="featured-visual">
+        <div class="featured-visual-bg vp-grad-2" style="position:absolute;inset:0; display:flex; align-items:center; justify-content:center;">
+          <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.2)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="featured-num">02</div>
+        <div class="featured-tag" style="background: var(--purple); color: white;">Short Film</div>
+      </div>
+      <div class="featured-body">
+        <div class="featured-category" style="color: var(--purple);">Narrative</div>
+        <div class="featured-title">AFTER DARK</div>
+        <div class="featured-desc">A short narrative film exploring loneliness in a hyperconnected world. Shot entirely at night — using darkness as a canvas for emotional storytelling.</div>
+        <div class="featured-meta">
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Duration</div>
+            <div class="featured-meta-val">12 min</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Format</div>
+            <div class="featured-meta-val">Short Film</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Year</div>
+            <div class="featured-meta-val">2024</div>
+          </div>
+        </div>
+        <a href="#" class="featured-link" style="color: var(--purple);" onclick="openLightbox('After Dark', 'A short narrative film exploring loneliness in a hyperconnected world. Shot entirely at night.'); return false;">
+          View Project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="featured-card reveal reveal-delay-2">
+      <div class="featured-visual">
+        <div class="featured-visual-bg vp-grad-3" style="position:absolute;inset:0; display:flex; align-items:center; justify-content:center;">
+          <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="rgba(255,107,26,0.2)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="featured-num">03</div>
+        <div class="featured-tag" style="background: var(--neon); color: white;">Brand</div>
+      </div>
+      <div class="featured-body">
+        <div class="featured-category" style="color: var(--neon);">Commercial</div>
+        <div class="featured-title">NEON PULSE</div>
+        <div class="featured-desc">High-octane brand campaign video combining kinetic editing, dynamic color grading, and immersive sound design to launch a fashion brand's identity.</div>
+        <div class="featured-meta">
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Duration</div>
+            <div class="featured-meta-val">90 sec</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Format</div>
+            <div class="featured-meta-val">Commercial</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Year</div>
+            <div class="featured-meta-val">2025</div>
+          </div>
+        </div>
+        <a href="#" class="featured-link" style="color: var(--neon);" onclick="openLightbox('Neon Pulse', 'High-octane brand campaign combining kinetic editing, dynamic color grading, and immersive sound design.'); return false;">
+          View Project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="featured-card reveal reveal-delay-3">
+      <div class="featured-visual">
+        <div class="featured-visual-bg vp-grad-4" style="position:absolute;inset:0; display:flex; align-items:center; justify-content:center;">
+          <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="featured-num">04</div>
+        <div class="featured-tag">Highlights</div>
+      </div>
+      <div class="featured-body">
+        <div class="featured-category">Events</div>
+        <div class="featured-title">MOMENTS MATTER</div>
+        <div class="featured-desc">Event highlight reel capturing the energy, emotion, and essence of a major cultural gathering. Fast-paced editing with a deep musical score.</div>
+        <div class="featured-meta">
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Duration</div>
+            <div class="featured-meta-val">5 min</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Format</div>
+            <div class="featured-meta-val">Event Film</div>
+          </div>
+          <div class="featured-meta-item">
+            <div class="featured-meta-label">Year</div>
+            <div class="featured-meta-val">2025</div>
+          </div>
+        </div>
+        <a href="#" class="featured-link" onclick="openLightbox('Moments Matter', 'Event highlight reel capturing the energy, emotion, and essence of a major cultural gathering.'); return false;">
+          View Project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="about-photo-frame">
+        <div class="about-photo-accent"></div>
+        <div class="about-photo-bg"></div>
+        <div class="about-photo-content">
+          <div class="about-initials">EN</div>
+        </div>
+        <div class="about-stat-strip">
+          <div class="about-stat">
+            <div class="about-stat-num">150+</div>
+            <div class="about-stat-label">Videos</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">3+</div>
+            <div class="about-stat-label">Years</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">∞</div>
+            <div class="about-stat-label">Vision</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-content">
+      <div class="section-label reveal">About Me</div>
+      <h2 class="about-title reveal reveal-delay-1">
+        I TELL STORIES<br>WITH <em>FRAMES</em>
+      </h2>
+      <p class="about-text reveal reveal-delay-2">
+        I'm Emmynice — a video creator with a deep passion for visual storytelling. I don't just shoot and edit footage; I craft experiences that resonate, that move people, that stay with them long after the screen goes dark.
+      </p>
+      <p class="about-text reveal reveal-delay-3">
+        My journey into video creation started with a simple camera and an obsession with capturing the world as I see it — raw, honest, and cinematic. Every project I take on is approached with the same question: what feeling do I want the viewer to walk away with?
+      </p>
+      <p class="about-text reveal reveal-delay-4">
+        From documentary and short-form content to brand campaigns and highlight reels — my style blends kinetic editing, intentional color grading, and a strong narrative sense. If you have a story, I have the frame for it.
+      </p>
+      <div class="about-skills reveal" style="transition-delay: 0.5s;">
+        <span class="skill-tag">Video Editing</span>
+        <span class="skill-tag">Color Grading</span>
+        <span class="skill-tag">Cinematography</span>
+        <span class="skill-tag">Storytelling</span>
+        <span class="skill-tag">Short-Form</span>
+        <span class="skill-tag">Brand Content</span>
+        <span class="skill-tag">Documentary</span>
+        <span class="skill-tag">Motion Design</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-bg-text">CONTACT</div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="section-label reveal">Get In Touch</div>
+      <h2 class="contact-title reveal reveal-delay-1">
+        LET'S CREATE<br><span>SOMETHING</span><br>GREAT
+      </h2>
+      <p class="contact-sub reveal reveal-delay-2">
+        Open to brand collaborations, project inquiries, commissioned work, and creative partnerships. Let's tell a story together.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:Emmyniceola@gmail.com" class="contact-link reveal reveal-delay-1">
+          <div class="contact-link-icon" style="background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--electric)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="contact-link-text">
+            <div class="contact-link-label">Email</div>
+            <div class="contact-link-val">Emmyniceola@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://x.com/emynice_" target="_blank" class="contact-link reveal reveal-delay-2">
+          <div class="contact-link-icon" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--white)"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <div class="contact-link-text">
+            <div class="contact-link-label">X (Twitter)</div>
+            <div class="contact-link-val">@emynice_</div>
+          </div>
+        </a>
+        <a href="https://t.me/Emmynice01" target="_blank" class="contact-link reveal reveal-delay-3">
+          <div class="contact-link-icon" style="background: rgba(0,136,204,0.1); border: 1px solid rgba(0,136,204,0.3);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0088cc" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </div>
+          <div class="contact-link-text">
+            <div class="contact-link-label">Telegram</div>
+            <div class="contact-link-val">@Emmynice01</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="contact-form reveal reveal-delay-2">
+      <div class="form-title">SEND A MESSAGE</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="hello@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input type="text" class="form-input" placeholder="Brand Collaboration / Project Inquiry">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Budget Range</label>
+        <input type="text" class="form-input" placeholder="e.g. $500 – $2000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell me about your project</label>
+        <textarea class="form-textarea" placeholder="Describe your vision, project goals, timeline, and how you'd like to work together..."></textarea>
+      </div>
+      <button class="form-submit" onclick="handleFormSubmit()">Send Inquiry →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">EMMY<span>NICE</span></div>
+  <div class="footer-copy">© 2025 EMMYNICE. All rights reserved.</div>
+  <div class="footer-socials">
+    <a href="https://x.com/emynice_" target="_blank" class="footer-social" title="X">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://t.me/Emmynice01" target="_blank" class="footer-social" title="Telegram">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </a>
+    <a href="mailto:Emmyniceola@gmail.com" class="footer-social" title="Email">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </a>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <div class="lightbox-video-area">
+      <div style="text-align: center; color: var(--muted);">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1" style="margin-bottom:1rem;display:block;margin:0 auto 1rem;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <p style="font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 2px; margin-top: 1rem;">ADD YOUR VIDEO URL HERE</p>
+        <p style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.5;">Replace placeholder with embed link</p>
+      </div>
+    </div>
+    <div class="lightbox-title" id="lightboxTitle"></div>
+    <div class="lightbox-meta" id="lightboxMeta"></div>
+  </div>
+</div>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // NAV SCROLL
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // LIGHTBOX
+  function openLightbox(title, meta) {
+    const lb = document.getElementById('lightbox');
+    document.getElementById('lightboxTitle').textContent = title;
+    document.getElementById('lightboxMeta').textContent = meta;
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(e) {
+    if (!e || e.target === document.getElementById('lightbox') || !e.target.closest) {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // FORM SUBMIT
+  function handleFormSubmit() {
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = 'Message Sent ✓';
+    btn.style.background = '#22c55e';
+    setTimeout(() => { btn.textContent = 'Send Inquiry →'; btn.style.background = ''; }, 3000);
+  }
+
+  // PARALLAX HERO
+  window.addEventListener('scroll', () => {
+    const hero = document.querySelector('.hero-content');
+    if (hero) hero.style.transform = `translateY(${window.scrollY * 0.3}px)`;
+    const grid = document.querySelector('.hero-grid');
+    if (grid) grid.style.transform = `translateY(${window.scrollY * 0.1}px)`;
+  });
+</script>
+</body>
+</html>
